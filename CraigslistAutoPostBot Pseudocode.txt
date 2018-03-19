@@ -6,8 +6,8 @@ PSEUDOCODE:
   b) Check if user is logged on
     ---> prompt login if not logged on
   c) Click post classifieds link (#postlks #post)
-  d) Click service offered radio button (input:nth-child(10))
-  e) Click computer services (input:nth-child(3))
+  d) Click for sale by owner radio button (input[value=fso])
+  e) Click videogames (input:nth-child(42))
   f) Fill form
     i) Click on ok to contact phone (#contact_phone_ok)
     ii) Click on ok to contact text (#contact_text_ok)
