@@ -1,58 +1,38 @@
 // loading dependencies
 var Nightmare = require('nightmare'),
   nightmare = Nightmare();
+var vo = require('vo');
+var ads = require('./ads.js');
+var post = require('./post.js');
+var performLogin = require('./performLogin');
+var loginCheck = require('./loginCheck.js');
 
-// loading json
-var ads = require('./ads.js')
+var run = function * (totalAds) {
+  var loggedIn = yield vo(loginCheck) ();
+  if(loggedIn) {
+    console.log('Login was successful');
+    nightmare.end(); // added after code working
+    vo(main) (totalAds);
+  } else {
+    console.log('Login failed, trying to login')
+    loggedIn = yield vo(performLogin) ();
+    nightmare.end(); // added after code working
+    loggedIn ? vo(main) (totalAds) : console.log('Unable to login. Please verify credentials in source code');
 
-// go to craigslist url
-var url = 'http://' + process.argv[2] + '.craigslist.org'
-
-// go to craigslist url (give program the city as an argument)
-// ad will be in json
-var postAd = function(ad) {
-  nightmare.goto(url)
-    .wait(2000)
-    // navigate to form and click post classifieds link (#postlks #post)
-    .click('#postlks #post') // # is id
-    // click "for sale by owner" radio button (input[value=fso])
-    .click('input[value=fso]')
-    // click continue
-    .click('.pickbutton') // . is class
-    .wait(1000)
-    // click computer services (input: nth-child(3)) !!! 42 for videogames
-    .click('label:nth-child(3) input')
-    .wait(1000)
-    .click('label:nth-child(0) input') // selecting vancouver!!!
-    .wait(1000)
-    // Fill form
-    // click on ok to contact phone (#contact_phone_ok)
-    .click('#contact_phone_ok')
-    // click on ok to contact text (#contact_text_ok)
-    .click('#contact_text_ok')
-    // enter contact name (#contact_name)
-    .insert('#contact_name', ad.name) // can use type instead to make it seem human (insert is faster)
-    // enter contact phone (#contact_phone)
-    .insert('#contact_phone', ad.phone)
-    // enter title (#PostingTitle)
-    .insert('#PostingTitle', ad.title)
-    // enter city (#GeographicArea)
-    .insert('#GeographicArea', ad.city)
-    // enter postal code (#postal_code)
-    .insert('#postal_code', ad.zip)
-    // enter body (#PostingBody)
-    .insert('#PostingBody', ad.body)
-    // don't show map, so click on it to uncheck it
-    .click('#wantamap')
-    // continue (next page is for uploading images)
-    .click('.bigbutton')
-    .wait(1000) // !!! add uploading image functionality later
-    .click('done bigbutton')
-    .wait(1000)
-    // click publish button
-    .click('.bigbutton')
-    .wait(1000)
-    // confirm posting with screenshot
-    .screenshot('posting.png')
-    .end()
+  }
 };
+
+var main = function * (totalAds) {
+  var post = require('./post.js');
+  var ads = require('./ads.js');
+
+  for(var i = 0; i < totalAds; i++) {
+    console.log('Attempting to post ad', i);
+    yield vo(post)(ads[i], i);
+    nightmare.end();
+  }
+
+  process.exit();
+};
+
+vo(run) (ads.length);
