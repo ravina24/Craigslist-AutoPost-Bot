@@ -1,0 +1,25 @@
+PSEUDOCODE:
+1) Load all dependencies
+2) Load ads from json file
+3) Begin looping through ads
+  a) Go to craigslist url (put city as an argument for program)
+  b) Check if user is logged on
+    ---> prompt login if not logged on
+  c) Click post classifieds link (#postlks #post)
+  d) Click service offered radio button (input:nth-child(10))
+  e) Click computer services (input:nth-child(3))
+  f) Fill form
+    i) Click on ok to contact phone (#contact_phone_ok)
+    ii) Click on ok to contact text (#contact_text_ok)
+    iii) Enter contact name (#contact_name)
+    iv) Enter contact phone (#contact_phone)
+    v) Enter title (#PostingTitle)
+    vi) Enter city (#GeographicArea)
+    vii) Enter Postal Code (#postal_code)
+    viii) Enter ad description (#PostingBody)
+    ix) Click on show on maps (#wantamap)
+  g) Click on Continue (.bigbutton)
+  h) Click done with images (.bigbutton)
+  i) Click publish (.bigbutton)
+  j) Take a screenshot to confirm ad has been posted
+4) Repeat step 3 for each ad until all ads are posted
